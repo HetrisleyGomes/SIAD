@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<div class="container m-3">
+    <h3>Faça upload do arquivo</h3>
+
+    <form action="/save/csv" method="post" enctype="multipart/form-data">
+        <input type="file" name="form-csv" class="form-control" required><br>
+        <table class="table table-sm">
+            <legend>Método de somatório das notas</legend>
+            <tr>
+            <td style="width: 50%;">
+              <label for="valorInteiro" class="form-check-label btn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tooltip on right" title="Exemplo: A1 = 20 + A2 = 30 + A3 = 10 (valendo 20) | Nota final = 60 de 70"><input type="radio" name="valor" id="valorInteiro" class="form-check-input" value="valorInteiro" required> A soma das atividades serão somadas para nota geral.</label>
+            </td>
+            <td style="width: 50%;">
+              <label for="PorcentagemInteiro" class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tooltip on right" title="Exemplo: A1 = 20 + A2 = 30 + A3 = 10 (valendo 20) | Nota final = 95 de 100"><input type="radio" name="valor" id="PorcentagemInteiro" class="form-check-input" value="PorcentagemInteiro" required> A soma das atividades serão avaliadas sua porcentagem de acerto.</label>
+            </td>
+            </tr>
+          </table>
+          <span class="text-muted fw-light">No método 'A soma das atividades serão somadas para nota geral' caso alguma nota passe de 100, ela será convertida automaticamente para 100.</span><br>
+        <input type="submit" value="Enviar arquivo" class="btn btn-sm btn-primary mt-3">
+    </form>
+</div>
+{% endblock %}

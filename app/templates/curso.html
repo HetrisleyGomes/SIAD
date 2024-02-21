@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block conteudo %}    
+    <div class="container">
+        <h1>Notas das atividades da disciplina</h1>
+        <h4>{{ turma_nome }}</h4>
+    </div>
+    <hr>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width: 30%;">Atividade</th>
+                <th style="width: 30%;">Aluno</th>
+                <th>Nota Obtida</th>
+                <th>Nota Máxima</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for atividade in data %}
+            {% set index_atividade = loop.index0 %}
+            <tr>
+                <td rowspan="{{ atividade.alunos|length }}">{{ atividade.atividade }}</td>
+                {% for aluno in atividade.alunos %}
+                <td>{% if aluno.nome.fullName == 'Maria Daguia' %}
+                    Maria
+                  {% endif %}
+                  {% if aluno.nome.fullName == 'Tx Secreto' %}
+                  João
+                {% endif %}</td>
+                <td>{{ aluno.nota }}</td>
+                <td>{{ nota_maxima[index_atividade] }}</td>
+                </tr>
+                {% if not loop.last %}
+                <tr>
+                {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        <hr>
+    <div class="container">
+        <div class="d-flex flex-row form-check justify-content-center">
+        <form action="/save/api" method="post">
+            <table class="table">
+            <legend>Método de somatório das notas</legend>
+            <tr>
+            <td style="width: 50%;">
+                <label for="valorInteiro" class="form-check-label btn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tooltip on right" title="Exemplo: A1 = 20 + A2 = 30 + A3 = 10 (valendo 20) | Nota final = 60 de 70">
+                <input type="radio" name="valor" id="valorInteiro" class="form-check-input" value="valorInteiro" required> A soma das atividades serão somadas para nota geral.</label>
+              </td>
+              <td style="width: 50%;">
+                <label for="PorcentagemInteiro" class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tooltip on right" title="Exemplo: A1 = 20 + A2 = 30 + A3 = 10 (valendo 20) | Nota final = 95 de 100">
+                <input type="radio" name="valor" id="PorcentagemInteiro" class="form-check-input" value="PorcentagemInteiro" required> A soma das atividades serão avaliadas sua porcentagem de acerto.</label>
+              </td>
+            </tr>
+            </table>
+            <div class="d-flex justify-content-end mb-3">
+                <input type="hidden" name="turma" value="{{turma_nome}}">
+                <span class="text-muted fw-light me-3">Passe o mouse por cima para ver exemplos</span> <br>
+                <button type="submit" class="btn btn-success">Confirmar e Registrar</button>
+            </div>
+        </form>
+        </div>
+    </div>
+{% endblock %}
+
+

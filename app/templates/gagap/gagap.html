@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<style>
+    th, td {
+        border-left: 1px #d2d7dd solid;
+        border-right: 1px #d2d7dd solid;
+    }
+    th {
+        text-align: start;
+        background-color: #bbc0c5 !important;
+        width: {{ n }}%;
+    }
+
+</style>
+<h5>Software para Geração automática de grupos de alunos para atividades de Aprendizagem por Pares</h5>
+<hr>
+
+{{ data | safe}}
+
+{% endblock %}

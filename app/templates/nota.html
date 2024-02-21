@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+    <div class="container mb-2">
+      <h1 class="row mb-3">Selecione a Sala de aula qual você deseja trabalhar</h1>
+      <div class="row">
+        <div class="container col-sm-6">
+          <h5 class="col">Já tem as notas salvas em arquivo '.csv'? Clique <a href="/arquivo/csv" class="link-success text-decoration-none">Aqui</a>!</h5>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="container">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" colspan="2">Turma</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for curso in cursos %}
+                  <tr>
+                    <td>{{ curso.name }}</td>
+                    <td><a href="{{ url_for('curso', curso_id=curso.id) }}" class="btn btn-outline-success">Acessar</a></td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+{% endblock %}
+
+

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<div id="confirm_div" class="d-flex flex-column mx-3 mb-3 justify-content-center">
+    <strong>Atenção! </strong>
+    <span>
+        Algumas notas, tem a somátoria <strong>maior que 100!</strong> Se quiser manter as notas assim mesmo, precione 'Continuar', o máximo de cada nota será atualizada para 100. <br>
+        Caso a melhor maneira de registrar seja com a média, selecione a outra opção.
+    </span>
+    <hr>
+    <h4>Ocorrências:</h4>
+    <ul class="list-group list-group-flush">
+    {% for erro in erros %}
+        {% if loop.first %}
+        {% endif %}
+        <li class="list-group-item">{{ erro }}</li>
+    {% endfor %}
+    </ul>
+    <hr>
+    <form action="/save/api" method="post">
+            <label for="converter" class="form-check-label btn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tooltip on right">
+            <input type="radio" name="valor" id="converter" class="form-check-input" value="converter" required> Converter notas excedentes para 100.</label>
+
+            <label for="PorcentagemInteiro" class="form-check-label" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tooltip on right">
+            <input type="radio" name="valor" id="PorcentagemInteiro" class="form-check-input" value="PorcentagemInteiro" required> A soma das atividades serão avaliadas sua porcentagem de acerto.</label>
+
+        <div class="d-flex justify-content-end">
+            <button id="confirm-button" type="submit" class="btn btn-success">Confirmar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

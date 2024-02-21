@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<style>
+    .turma-cards {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  
+    .card {
+      margin: 30px;
+      width: 300px;
+    }
+
+    .card-body > h5 {
+        margin-bottom: 2em;
+    }
+  </style>
+<h5>Turmas</h5>
+<hr>
+<div class="border p-3">
+<a href="/turma/novo" class="btn btn-success">Criar nova turma</a>
+</div>
+
+<div class="turma-cards" id="sortable">
+  {% for nome, dados in turmas.items() %}
+    <div class="card" data-turma="{{ dados['nome'] }}">
+      <div class="card-body" id="{{ 'card-' + dados['nome'] }}">
+        <h5 class="card-title">{{ dados['nome'] |e }}</h5>
+        <a href="{{ url_for('turma_ver', turma=dados['nome']) }}" class="btn btn-success">Visualizar</a>
+        <a href="{{ url_for('turma_edt', turma=dados['nome']) }}" class="btn btn-warning">Editar</a>
+        <a href="{{ url_for('turma_del', turma=dados['nome']) }}" class="btn btn-danger">Deletar</a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+  <script>
+    $(function() {
+        $("#sortable").sortable({
+        update: function(event, ui) {
+            var turmaOrdenada = $(this).sortable('toArray', { attribute: 'data-turma' });
+            console.log(turmaOrdenada);
+            fetch('/reordenar_turmas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ novaOrdem: turmaOrdenada }),
+            });
+            console.log("foi?")
+        }
+        });
+        $("#sortable").disableSelection();
+    });
+  </script>
+  
+{% endblock %}

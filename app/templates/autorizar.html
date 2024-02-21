@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+    <div class="container m-3">
+      <h1>Ops! Parece que tivemos um problema com o token de autorização</h1>
+    </div>
+    <hr>
+    <div class="container">
+        Por favor clique <a class="link-primary" href="/autorizar/autenticar">aqui</a> para autorizar o token!
+    </div>
+    <div class="row">
+        <div class="container col-sm-6">
+          <h5 class="col">Já tem as notas salvas em arquivo '.csv'? Clique <a href="/arquivo/csv" class="link-success text-decoration-none">Aqui</a>!</h5>
+        </div>
+    </div>
+{% endblock %}
+
+
