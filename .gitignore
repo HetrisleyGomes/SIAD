@@ -2,9 +2,10 @@
 venv/
 
 app/config/*
-app/api/database/*
+app/api/database/
 *.pyc
 __pycache__/
 anotacoes.md
 diario_alter.xls
 requirements.txt
+
