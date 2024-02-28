@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let links = document.getElementsByTagName('a');
     for (var i = 0; i < links.length; i++) {
         links[i].addEventListener('click', function startLoading(){
-            document.getElementById('container_loader').style.display = 'flex';
+            if (!event.currentTarget.classList.contains('nao-carregar')) {
+                document.getElementById('container_loader').style.display = 'flex';
+            }
         })
     }
 });

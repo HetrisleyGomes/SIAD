@@ -25,7 +25,7 @@ def index():
 def notas():
     a = check_and_refresh_token()
     if a ==  False:
-        return render_template("nota_JustCSV.html", cursos = cursos['courses'])
+        return render_template("nota_JustCSV.html")
     cursos = api.listar_cursos()
     return render_template("nota.html", cursos = cursos['courses'])
 

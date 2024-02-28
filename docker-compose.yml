@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    command: ["flask", "run", "--debug", "--host","0.0.0.0"]

@@ -177,6 +177,8 @@ def verifica_link(link, dominio_desejado):
 
 def get_all_turmas():
     """Busca todos os registros de Turmas.json"""
+    if not os.path.exists(path):
+        return "Nenhuma turma salva"
     try:
         with open(path, 'r') as turmas_file:
             turmas = json.load(turmas_file)
@@ -186,6 +188,7 @@ def get_all_turmas():
 
 def get_turma(chave):
     """Busca um registro especifico de Turmas.json"""
+
     try:
         with open(path, 'r') as turmas_file:
             turmas = json.load(turmas_file)
