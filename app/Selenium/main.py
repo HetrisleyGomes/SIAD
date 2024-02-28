@@ -6,12 +6,12 @@ from time import sleep
 from selenium.webdriver.chrome.options import Options
 from decouple import config
 
+#print(webdriver.Chrome().service.service_args[1])
 
 datapath = config("DATA")
 
 def get_dados():
     dados = pd.read_json(datapath)
-
     return dados
         
 def aluno_data_name(a, alunos):
@@ -19,7 +19,7 @@ def aluno_data_name(a, alunos):
         a = a["fullName"]
     for aluno in alunos:
         nome = f"{aluno['Nome']} {aluno['Sobrenome']}"
-        if nome == a and aluno['Nome-SUAP']:
+        if nome == a and aluno.get('Nome-SUAP') is not None:
             return aluno['Nome-SUAP']
     return a
             
@@ -48,7 +48,6 @@ def iniciar(url, alunos):
 
     for index,row in dados.iterrows():
         # Obtém a lista de alunos na tabela de registrar notas
-        encontrado_bool = True
         registro_falt_bool = True
 
         aluno_name = aluno_data_name(row['aluno'], alunos)
@@ -59,23 +58,21 @@ def iniciar(url, alunos):
             nome_aluno = element_text.split('(')[0].strip()
             # Se o nome do aluno nesta linha for igual ao nome do aluno em dados.json
             if (nome_aluno.lower() == aluno_name.lower()):
-                encontrado_bool = False
                 registro_falt_bool = False 
                 nota_final = row['nota']
                 navegador.find_element(By.XPATH, f"//table[@id='table_notas']//tr[{index + 1}]//td[4]//table//tr[1]//td[2]//input").send_keys(str(nota_final))
                 print(f"Registrado, nota {nota_final}")
                 break
             sleep(1)
-        if (encontrado_bool):
-            asf.append(element_text)
+        print("CHegou aqui")
         if (registro_falt_bool):
-            acne.append(row['aluno']['fullName'])
+            if 'aluno' in row and 'fullName' in row['aluno']:
+                acne.append(row['aluno']['fullName'])
+            else:
+                acne.append(row['aluno'])
 
         if (acne):
             print("Alunos do Classroom não encontrados:")
             for aluno in acne:
                 print(aluno)
-        if (asf):
-            print("Alunos do SUAP faltantes:")
-            for aluno in asf:
-                print(aluno)
+

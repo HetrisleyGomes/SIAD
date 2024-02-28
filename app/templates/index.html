@@ -8,7 +8,7 @@
         {% if json %}
             <h4 class="m-4">Notas detectadas!</h4>
             <form action="/registrar" method="post" class="form m-3">
-                <fieldset class="border">
+                <fieldset class="border p-3">
                     <legend>Escolha a turma</legend>
                     <table class="table table-striped" style="width: 60%;">
                         {% if turmas %}
@@ -21,7 +21,8 @@
                             <tr><td>Ops! Parece que vocÊ não possui nenhuma turma registrada, clique em <strong>Turmas</strong> e faça seu registro!</td></tr>
                         {% endif %}
                     </table>
-                    {% if turmas %}
+                    {% if turmas and data %}
+                        <span class="text-muted">Antes de continuar, verifique se os nomes desta turma são compatíveis com os nomes dos alunos no SUAP</span>
                         <button type="submit" class="btn btn-success">Confirmar</button>
                     {% endif %}
                 </fieldset>
@@ -39,11 +40,7 @@
                 </ul>
             </div>
         {% endif %}
-        
     </div>
-
-    
-
 {% endblock %}
 
 

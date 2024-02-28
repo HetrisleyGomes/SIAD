@@ -14,7 +14,7 @@
         
     
         <div class="p-3 border">
-            <label for="urll" class="form-label">URL</label><input type="url" name="link-turma" class="form-control" id="urll" value="{{ turma['url'] }}">
+            <label for="urll" class="form-label">URL</label><input type="url" name="link-turma" class="form-control" {% if not edit %}disabled{% endif %} id="urll" value="{{ turma['url'] }}">
         </div>
 
         

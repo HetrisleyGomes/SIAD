@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 
 
 path = config('DATABASE')
-
+temp = config('DATA')
 def passFormFile(form):
     try:
         file_stream = io.BytesIO(form.read())
@@ -50,6 +50,7 @@ def formPorcento(aluno, nota, gab):
     return json_formatado
 
 def executar_selenium(link):
+    """Inicia o Selenium."""
     from .Selenium.main import set_url;
     try:
         set_url(link)
@@ -95,9 +96,10 @@ def extract_points_earned(student_submissions, nomes):
     return students_earned, flat_value_points
 
 def group_by_alunos(table_data):
-    """Agrupa os dados por alunos."""
-
+    """Obtém a nota pela média arentimetica da soma de todas as notas"""
+    # Lista para armazenar os resultados
     json_formatado = {}
+    # Lista para realizar os calculos
     json_formatado_calc = {}
 
     for atividade in table_data:
@@ -123,8 +125,10 @@ def group_by_alunos(table_data):
     return json_formatado
 
 def group_by_percents(table_data):
+    """Obtém a nota pela média arentimetica do valor obtido e o valor maximo de uma tarefa"""
     # Lista para armazenar os resultados
     json_formatado = {}
+    # Lista para realizar os calculos
     json_formatado_calc = {}
 
     for atividade in table_data:
@@ -145,21 +149,19 @@ def group_by_percents(table_data):
                 json_formatado[aluno_nome] = {"aluno": aluno["nome"], "nota": [nota]}
 
     print("TA VINDO AQUI")
-    # Converta o dicionário formatado em uma lista
     json_formatado = list(json_formatado.values())
     return json_formatado
 
 def exist_json():
     """Verifica se existe um arquivo Turmas.json"""
-
-    arquivo = 'C:/Users/User/Desktop/TCC/Projeto_tcc/app/api/turmas.json'
     
-    if os.path.exists(arquivo) and os.path.isfile(arquivo):
+    if os.path.exists(path) and os.path.isfile(path):
         return True
     return False
 
 def salvar_json(curso_data):
-    with open(path, 'w') as token_file:
+    """Salva o arquivo data.json"""
+    with open(temp, 'w') as token_file:
         json.dump(curso_data, token_file)
 
 def verifica_link(link, dominio_desejado):
@@ -174,6 +176,7 @@ def verifica_link(link, dominio_desejado):
         return False
 
 def get_all_turmas():
+    """Busca todos os registros de Turmas.json"""
     try:
         with open(path, 'r') as turmas_file:
             turmas = json.load(turmas_file)
@@ -182,6 +185,7 @@ def get_all_turmas():
     return turmas
 
 def get_turma(chave):
+    """Busca um registro especifico de Turmas.json"""
     try:
         with open(path, 'r') as turmas_file:
             turmas = json.load(turmas_file)
@@ -196,6 +200,7 @@ def get_turma(chave):
     
 
 def set_turma(turma):
+    """VSalva um novo registro no arquivo Turmas.json"""
     try:
         with open(path, 'r') as turmas_file:
             turmas = json.load(turmas_file)
@@ -208,6 +213,7 @@ def set_turma(turma):
         json.dump(turmas, turmas_file)
 
 def form_get_nomes(form):
+    """Reordena os nomes dos alunos baseado no arquivo Turmas.json"""
     try:
         file_stream = io.BytesIO(form.read())
         dados = pd.read_csv(file_stream)
@@ -221,6 +227,7 @@ def form_get_nomes(form):
         print(e)
 
 def edit_turma(chave, turma):
+    """Edita ocorrências no arquivo Turmas.json"""
     try:
         with open(path, 'r') as turmas_file:
             turmas = json.load(turmas_file)
@@ -235,6 +242,7 @@ def edit_turma(chave, turma):
         print(f"A turma '{chave}' não existe.")
 
 def delete_turma(chave):
+    """Remove uma ocorrência do arquivo Turmas.json"""
     try:
         with open(path, 'r') as turmas_file:
             turmas = json.load(turmas_file)
@@ -249,6 +257,7 @@ def delete_turma(chave):
         print(f"A turma '{chave}' não existe.")
 
 def reordenar_turmas_no_json(nova_ordem):
+    """Reordena as ocorrências do arquivo Turmas.json"""
     with open(path, 'r') as file:
         turmas = json.load(file)
     turmas = {turma: turmas[turma] for turma in nova_ordem}

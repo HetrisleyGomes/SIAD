@@ -1,11 +1,15 @@
 # Arquivos do ambiente virtual
 venv/
 
-app/config/*
-app/api/database/
+# Arquivos do /config
+config.py
+credentials.json
+token.json
+# Arquivos do /database
+data.json
+turmas.json
 *.pyc
 __pycache__/
 anotacoes.md
 diario_alter.xls
-requirements.txt
 

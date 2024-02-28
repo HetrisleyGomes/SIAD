@@ -22,16 +22,18 @@
 </div>
 
 <div class="turma-cards" id="sortable">
-  {% for nome, dados in turmas.items() %}
-    <div class="card" data-turma="{{ dados['nome'] }}">
-      <div class="card-body" id="{{ 'card-' + dados['nome'] }}">
-        <h5 class="card-title">{{ dados['nome'] |e }}</h5>
-        <a href="{{ url_for('turma_ver', turma=dados['nome']) }}" class="btn btn-success">Visualizar</a>
-        <a href="{{ url_for('turma_edt', turma=dados['nome']) }}" class="btn btn-warning">Editar</a>
-        <a href="{{ url_for('turma_del', turma=dados['nome']) }}" class="btn btn-danger">Deletar</a>
+  {% if turmas != "Nenhuma turma salva" %}      
+      {% for nome, dados in turmas.items() %}
+      <div class="card" data-turma="{{ dados['nome'] }}">
+        <div class="card-body" id="{{ 'card-' + dados['nome'] }}">
+          <h5 class="card-title">{{ dados['nome'] |e }}</h5>
+          <a href="{{ url_for('turma_ver', turma=dados['nome']) }}" class="btn btn-success">Visualizar</a>
+          <a href="{{ url_for('turma_edt', turma=dados['nome']) }}" class="btn btn-warning">Editar</a>
+          <a href="{{ url_for('turma_del', turma=dados['nome']) }}" class="btn btn-danger">Deletar</a>
+        </div>
       </div>
-    </div>
-  {% endfor %}
+      {% endfor %}
+  {% endif %}
 </div>
 
   <script>

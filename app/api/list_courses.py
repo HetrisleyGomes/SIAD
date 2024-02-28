@@ -1,4 +1,3 @@
-import os
 import json
 from decouple import config
 from googleapiclient.discovery import build
@@ -33,19 +32,12 @@ def listar_cursos():
     
 def get_curso(curso_id):
     """Lista os cursos cadastrados no Google Classroom."""
-    # Carrega as informações do token do arquivo
     with open(token_path, 'r') as token_file:
         token_json = json.load(token_file)
-
-    # Cria um objeto Credentials a partir do conteúdo do arquivo
     credentials = Credentials.from_authorized_user_info(token_json, SCOPES)
-
-
-    # Cria um serviço para a API do Google Classroom
     service = build('classroom', 'v1', credentials=credentials)
-
-    # Faz a solicitação para listar os cursos
     course = service.courses().get(id=curso_id).execute()
+    
     return course
 
 def get_estudantes(curso_id):
@@ -54,12 +46,8 @@ def get_estudantes(curso_id):
     with open(token_path, 'r') as token_file:
         token_json = json.load(token_file)
 
-    # Cria um objeto Credentials a partir do conteúdo do arquivo
     credentials = Credentials.from_authorized_user_info(token_json, SCOPES)
-
-    # Cria um serviço para a API do Google Classroom
     service = build('classroom', 'v1', credentials=credentials)
-
     # Faz a solicitação para obter a lista de todas as atividades do curso
     course_works = service.courses().courseWork().list(courseId=curso_id).execute()
 
@@ -75,8 +63,10 @@ def get_estudantes(curso_id):
                 courseWorkId=course_work['id']
             ).execute()
         
-            activity_name = course_work['title']  # Nome da atividade
-            activity_names.append(activity_name)  # Adiciona o nome da atividade à lista
+            # Nome da atividade
+            activity_name = course_work['title']  
+            # Adiciona o nome da atividade à lista
+            activity_names.append(activity_name)
 
             # Adiciona as notas da atividade atual à lista geral
             all_student_submissions.append(student_submissions)
@@ -89,12 +79,8 @@ def get_student_name(actor_user_id):
     with open(token_path, 'r') as token_file:
         token_json = json.load(token_file)
 
-    # Cria um objeto Credentials a partir do conteúdo do arquivo
     credentials = Credentials.from_authorized_user_info(token_json, SCOPES)
-
-    # Cria um serviço para a API do Google Classroom
     service = build('classroom', 'v1', credentials=credentials)
-
     # Faz a solicitação para obter as informações do perfil do aluno
     student_profile = service.userProfiles().get(userId=actor_user_id).execute()
 
@@ -105,13 +91,8 @@ def get_course_name(curso_id):
     with open(token_path, 'r') as token_file:
         token_json = json.load(token_file)
 
-    # Cria um objeto Credentials a partir do conteúdo do arquivo
     credentials = Credentials.from_authorized_user_info(token_json, SCOPES)
-
-    # Cria um serviço para a API do Google Classroom
     service = build('classroom', 'v1', credentials=credentials)
-
-    # Faça uma solicitação para obter os detalhes da turma
     course = service.courses().get(id=curso_id).execute()
 
     # O nome da turma está em 'course['name']'

@@ -1,10 +1,12 @@
 from app import app
-from flask import render_template, redirect, flash, url_for, session, request, jsonify, Response, send_from_directory
+import os
+from flask import render_template, redirect, flash, url_for, session, request, jsonify
 from app.api.main import check_and_refresh_token, authenticate_google
 import app.api.list_courses as api
 import app.api.gagap as gg
 import app.functions as func
 import app.Selenium.main as selenium
+from decouple import config
 import math
 
 json_formatado = {}
@@ -13,14 +15,17 @@ nota_maxima = []
 @app.route('/')
 @app.route('/home')
 def index():
+    data = False
+    if os.path.exists(config("DATA")):
+        data = True
     turmas = func.get_all_turmas()
-    return render_template("index.html",json = func.exist_json(), turmas = turmas)
+    return render_template("index.html",json = func.exist_json(), turmas = turmas, data = data)
 
 @app.route('/notas')
 def notas():
     a = check_and_refresh_token()
     if a ==  False:
-        return redirect(url_for('autorizar'))
+        return render_template("nota_JustCSV.html", cursos = cursos['courses'])
     cursos = api.listar_cursos()
     return render_template("nota.html", cursos = cursos['courses'])
 
@@ -42,6 +47,8 @@ def autenticar():
     authenticate_google()
     return redirect(url_for('index'))
 
+# SALVAR NOTAS ------------------------------------
+
 @app.route('/arquivo/csv')
 def arquivo_csv():
     return render_template("arquivocsv.html")
@@ -49,9 +56,9 @@ def arquivo_csv():
 @app.route('/save/api', methods=['POST'])
 def save_api():
     metodo = request.form.get('valor')
-    turma = request.form.get('turma')
     table_data = session.get('table_data', {})
     if metodo == 'valorInteiro':
+        # Salva a nota dos alunos usando a soma por inteiros
         json_formatado = func.group_by_alunos(table_data)
         erros = []
         for aluno in json_formatado:
@@ -66,12 +73,14 @@ def save_api():
         session['erro'] = erros
         return redirect(url_for('confirm'))
     elif metodo == 'PorcentagemInteiro':
+        # Salva a nota dos alunos usando a média por porcentagem
         table_data = session.get('table_data', {})
         json_formatado = func.group_by_percents(table_data)
         func.salvar_json(json_formatado)
         flash('Notas Registradas salvas na mémoria, agora registre as notas!')
         return redirect(url_for('index'))
     elif metodo == 'converter':
+        # Transforma notas maior que 100 em 100
         json_formatado = func.group_by_alunos(table_data)
         for aluno in json_formatado:
             if int(aluno["nota"]) > 100:
@@ -94,7 +103,7 @@ def registrar():
     try:
         selenium.iniciar(turma_info['url'], turma_info['alunos'])
         import os
-        path = 'C:/Users/User/Desktop/TCC/Projeto_tcc/app/api/data.json'
+        path = config('DATA')
         if os.path.exists(path):
             os.remove(path)
     except Exception as e:
@@ -119,6 +128,8 @@ def save_csv():
     flash('Notas Registradas salvas na mémoria, agora registre as notas!')
     return redirect(url_for('index'))
 
+# GAGAP ------------------------------------
+
 @app.route('/gagap')
 def gagap_form():
     return render_template("gagap/gagap_form.html")
@@ -131,6 +142,8 @@ def gagap_analitics():
     data_html = data_full.to_html(classes='table table-collspan', index=False)
     size = math.floor(100/grupos)
     return render_template("gagap/gagap.html", data = data_html, n = size)
+
+# TURMAS ------------------------------------
 
 @app.route('/turmas')
 def turmas_salvas():
