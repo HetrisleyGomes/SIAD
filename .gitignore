@@ -2,7 +2,7 @@
 venv/
 
 # Arquivos do /config
-config.py
+#config.py
 credentials.json
 token.json
 # Arquivos do /database

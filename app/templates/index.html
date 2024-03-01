@@ -6,7 +6,10 @@
     <hr>
     <div class="container border">
         {% if json %}
-            <h4 class="m-4">Notas detectadas!</h4>
+            {% if data %}
+                <h4 class="m-4 text-success">Notas detectadas!</h4>
+            {% endif %}
+            
             <form action="/registrar" method="post" class="form m-3">
                 <fieldset class="border p-3">
                     <legend>Escolha a turma</legend>
@@ -21,7 +24,15 @@
                             <tr><td>Ops! Parece que vocÊ não possui nenhuma turma registrada, clique em <strong>Turmas</strong> e faça seu registro!</td></tr>
                         {% endif %}
                     </table>
+                    {% if not data %}
+                        <h6 class="m-4">Nenhuma nota encontrada na memória.</h6>
+                    {% endif %}
                     {% if turmas and data %}
+                        <h6 class="m-4">Escolha a etapa.</h6>
+                        <div class="d-flex flex-align-itens flex-justify-content">
+                            <div class="div-etapa"><label for="etapa1" class="label-etapa">Etapa 1</label><input type="radio" name="etapa" id="etapa1" required value="3"></div>
+                            <div class="div-etapa"><label for="etapa2" class="label-etapa">Etapa 2</label><input type="radio" name="etapa" id="etapa2" required value="4"></div>
+                        </div>
                         <span class="text-muted">Antes de continuar, verifique se os nomes desta turma são compatíveis com os nomes dos alunos no SUAP</span>
                         <button type="submit" class="btn btn-success">Confirmar</button>
                     {% endif %}

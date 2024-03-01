@@ -19,6 +19,17 @@
     animation:s3 1s infinite linear;
 }
 
+.div-etapa{
+    width: 60%;
+    background-color: #d4d4d4;
+    margin: 8px 18px;
+    padding: 10px;
+}
+.label-etapa {
+    width: 90%;
+    margin-left: 8px;
+}
+
 
 @keyframes s3{ 
     100%{transform: rotate(1turn)}

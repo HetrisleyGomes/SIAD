@@ -24,7 +24,8 @@ def aluno_data_name(a, alunos):
     return a
             
 
-def iniciar(url, alunos):
+def iniciar(url, alunos, etapa):
+    print(f"ETAPA: {etapa -2} <=======================")
     chrome_options = Options()
     chrome_options.add_argument('--headless')  # Executar em modo headless
 
@@ -60,7 +61,10 @@ def iniciar(url, alunos):
             if (nome_aluno.lower() == aluno_name.lower()):
                 registro_falt_bool = False 
                 nota_final = row['nota']
-                navegador.find_element(By.XPATH, f"//table[@id='table_notas']//tr[{index + 1}]//td[4]//table//tr[1]//td[2]//input").send_keys(str(nota_final))
+                # Se etapa 1 etapa_table = 3, se etapa 2 então etapa_table = 4
+                #//*[@id="table_notas"]/tbody/tr[1]/td[3]/table/tbody/tr[1]/td[2]/input
+                #//*[@id="table_notas"]/tbody/tr[1]/td[4]/table/tbody/tr[1]/td[2]/input
+                navegador.find_element(By.XPATH, f"//table[@id='table_notas']//tr[{index + 1}]//td[{etapa}]//table//tr[1]//td[2]//input").send_keys(str(nota_final))
                 print(f"Registrado, nota {nota_final}")
                 break
             sleep(1)

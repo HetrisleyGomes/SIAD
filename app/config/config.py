@@ -1,0 +1,1 @@
+SENHA="palavra-secreta"

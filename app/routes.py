@@ -98,10 +98,11 @@ def confirm():
 def registrar():
     #dominio_alvo = "suap.ifrn.edu.br"
     turma = request.form.get('turma')
+    etapa = request.form.get('etapa')
     print(turma)
     turma_info = func.get_turma(turma)
     try:
-        selenium.iniciar(turma_info['url'], turma_info['alunos'])
+        selenium.iniciar(turma_info['url'], turma_info['alunos'], etapa)
         import os
         path = config('DATA')
         if os.path.exists(path):
