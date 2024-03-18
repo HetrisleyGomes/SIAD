@@ -4,16 +4,20 @@
 <hr>
 <div class="border p-3">
 <form action="/turma/salvar" method="post" class="form" enctype="multipart/form-data">
-    <label for="nome-turma" class="form-check-label">Nome da turma:</label>
-    <input type="text" name="nome-turma" id="nome-turma" class="form-control" required>
-    <label for="link-turma" class="form-check-label">Link da turma:</label>
+    <label for="link-turma" class="form-label">Link da turma:</label>
     <input type="url" name="link-turma" id="link-turma" class="form-control" required placeholder="Insira o Link da turma no SUAP" >
     <br>
-    <label for="form-csv" class="form-check-label">Arquivo .csv baixado do google classroom:</label>
-    <input type="file" name="form-csv" class="form-control" required accept=".csv">
-    <div id="csvHelp" class="form-text">O arquivo csv é obtido diretamente no google classroom</div>
+    <fieldset>
+        <legend>Turmas disponíveis</legend>
+        {% for turma in turmas %}
+            <div class="item p-2 m-2">
+                <label for="turma-{{turma.turmaID}}" class="form-check-label">{{ turma.turmaInfo }}</label>
+                <input type="radio" name="turma-select" id="turma-{{turma.turmaID}}" value="{{turma.turmaID}}" class="form-check-input" required>
+            </div>
+        {% endfor %}
+    </fieldset>
     <br>
-    <button type="submit" class="btn btn-primary btn-sm">Prosseguir</button>
+    <button type="submit" class="btn btn-primary">Prosseguir</button>
 </form>
 </div>
 {% endblock %}

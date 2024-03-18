@@ -1,3 +1,17 @@
+.navegacao{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-shrink: 1;
+    justify-content: space-between;
+}
+.navegacao div {
+    display: flex;
+    align-items: center;
+    & .icon {
+        display: flex;
+        align-items: center;
+    }
+}
 
 .container_loader{
     position: absolute;
@@ -30,6 +44,16 @@
     margin-left: 8px;
 }
 
+.table-turmas{
+    width: 95%;
+    background-color: #d4d4d4;
+    margin: 8px 18px;
+    padding: 10px;
+}
+.label-turma{
+    width: 100%;
+    margin-left: 8px;
+}
 
 @keyframes s3{ 
     100%{transform: rotate(1turn)}

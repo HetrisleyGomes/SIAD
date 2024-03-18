@@ -22,14 +22,14 @@
 </div>
 
 <div class="turma-cards" id="sortable">
-  {% if turmas != "Nenhuma turma salva" %}      
-      {% for nome, dados in turmas.items() %}
-      <div class="card" data-turma="{{ dados['nome'] }}">
-        <div class="card-body" id="{{ 'card-' + dados['nome'] }}">
-          <h5 class="card-title">{{ dados['nome'] |e }}</h5>
-          <a href="{{ url_for('turma_ver', turma=dados['nome']) }}" class="btn btn-success">Visualizar</a>
-          <a href="{{ url_for('turma_edt', turma=dados['nome']) }}" class="btn btn-warning">Editar</a>
-          <a href="{{ url_for('turma_del', turma=dados['nome']) }}" class="btn btn-danger">Deletar</a>
+  {% if turmas != null %}      
+      {% for turma in turmas %}
+      <div class="card" data-turma="{{ turma[0][0].turmaID }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ turma[0][0].turmaInfo }}</h5>
+          <a href="{{ url_for('turma_ver', turma=turma[0][0].turmaID) }}" class="btn btn-success">Visualizar</a>
+          <a href="{{ url_for('turma_edt', turma=turma[1]) }}" class="btn btn-warning">Editar</a>
+          <a href="" class="btn btn-danger">Deletar</a>
         </div>
       </div>
       {% endfor %}

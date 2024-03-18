@@ -51,10 +51,10 @@ def check_and_refresh_token():
                 save_token(creds)
             except Exception as e:
                 print(f"Erro ao atualizar credenciais: {e}")
-                if str(e) == "('invalid_grant: Token has been expired or revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been expired or revoked.'})":
-                    return bool(False)
-                elif str(e) == "('invalid_grant: Bad Request', {'error': 'invalid_grant', 'error_description': 'Bad Request'})":
-                    authenticate_google()
+                #if str(e) == "('invalid_grant: Token has been expired or revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been expired or revoked.'})":
+                #elif str(e) == "('invalid_grant: Bad Request', {'error': 'invalid_grant', 'error_description': 'Bad Request'})":
+                #    authenticate_google()
+                return bool(False)
         else:
             return bool(False)
     return creds

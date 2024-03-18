@@ -25,7 +25,7 @@ def aluno_data_name(a, alunos):
             
 
 def iniciar(url, alunos, etapa):
-    print(f"ETAPA: {etapa -2} <=======================")
+    print(f"ETAPA: {int(etapa) -2} <=======================")
     chrome_options = Options()
     chrome_options.add_argument('--headless')  # Executar em modo headless
 
@@ -35,6 +35,7 @@ def iniciar(url, alunos, etapa):
     dados = []
     dados = get_dados()
 
+    # Aqui está sendo feita a busca pela tabela onde se registra as notas
     table = navegador.find_elements(By.XPATH, "//table[@id='table_notas']//tr")
     tabela_notas = []
     for row in table:
@@ -68,7 +69,7 @@ def iniciar(url, alunos, etapa):
                 print(f"Registrado, nota {nota_final}")
                 break
             sleep(1)
-        print("CHegou aqui")
+
         if (registro_falt_bool):
             if 'aluno' in row and 'fullName' in row['aluno']:
                 acne.append(row['aluno']['fullName'])

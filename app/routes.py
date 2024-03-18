@@ -1,13 +1,17 @@
-from app import app
+from app import app, db
 import os
 from flask import render_template, redirect, flash, url_for, session, request, jsonify
 from app.api.main import check_and_refresh_token, authenticate_google
 import app.api.list_courses as api
 import app.api.gagap as gg
 import app.functions as func
+from app.models import Professor, ProfessorTurmas, Turma
 import app.Selenium.main as selenium
+from app.api.forms import LoginForm
 from decouple import config
+from flask_login import login_user, login_required, logout_user, current_user
 import math
+import json
 
 json_formatado = {}
 nota_maxima = []
@@ -18,7 +22,12 @@ def index():
     data = False
     if os.path.exists(config("DATA")):
         data = True
-    turmas = func.get_all_turmas()
+    turmas = []
+    if current_user.is_authenticated:
+        turmas_do_usuario = ProfessorTurmas.query.filter_by(professorID=current_user.professorId).all()
+        for turma in turmas_do_usuario:
+            turmas.append([Turma.query.join(ProfessorTurmas).filter(ProfessorTurmas.professorTurmasid == turma.professorTurmasid).all(), turma.professorTurmasid])
+    #turmas = func.get_all_turmas()
     return render_template("index.html",json = func.exist_json(), turmas = turmas, data = data)
 
 @app.route('/notas')
@@ -46,6 +55,31 @@ def autorizar():
 def autenticar():
     authenticate_google()
     return redirect(url_for('index'))
+
+# LOGIN -----------------------------------------------
+@app.route('/login', methods=['GET','POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        usuario = Professor.query.filter_by(email=email, senha=password).first()
+        if usuario:
+            login_user(usuario)
+            flash('Login bem-sucedido!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Credenciais inválidas. Tente novamente.', 'danger')
+    return render_template('login.html', form=form)
+
+
+# Rota para fazer logout
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logout bem-sucedido!', 'success')
+    return redirect(url_for('login'))
 
 # SALVAR NOTAS ------------------------------------
 
@@ -95,14 +129,21 @@ def confirm():
     return render_template('confirmar.html', erros = error_msg)
 
 @app.route('/registrar', methods=['POST'])
+@login_required
 def registrar():
     #dominio_alvo = "suap.ifrn.edu.br"
     turma = request.form.get('turma')
     etapa = request.form.get('etapa')
-    print(turma)
-    turma_info = func.get_turma(turma)
+    turma_do_professor = ProfessorTurmas.query.get(turma)
+    turma_info = Turma.query.filter_by(turmaID = turma_do_professor.turmaID).first()
+    turma_info.alunos = json.loads(turma_info.alunos)
+    url = turma_do_professor.link
+    print(url)
+    print(turma_info.alunos)
     try:
-        selenium.iniciar(turma_info['url'], turma_info['alunos'], etapa)
+        selenium.iniciar(url, turma_info.alunos, etapa)
+        flash('Notas Registradas no SUAP com sucesso!')
+        return redirect(url_for('index'))
         import os
         path = config('DATA')
         if os.path.exists(path):
@@ -147,55 +188,74 @@ def gagap_analitics():
 # TURMAS ------------------------------------
 
 @app.route('/turmas')
+@login_required
 def turmas_salvas():
-    turmas = func.get_all_turmas()
+    professor_id = current_user.professorId
+    turmas_do_usuario = ProfessorTurmas.query.filter_by(professorID=professor_id).all()
+    turmas = []
+    for turma in turmas_do_usuario:
+        turmas.append([Turma.query.join(ProfessorTurmas).filter(ProfessorTurmas.professorTurmasid == turma.professorTurmasid).all(), turma.professorTurmasid])
     return render_template("turmas-forms/turmas.html", turmas = turmas)
 
 @app.route('/turma/novo')
+@login_required
 def turma_novo():
-    return render_template("turmas-forms/nova_turma.html")
+    turmas = Turma.query.all()
+    return render_template("turmas-forms/nova_turma.html", turmas = turmas)
 
 @app.route('/turma/salvar', methods=['POST'])
+@login_required
 def turma_salvar():
-    nome = request.form.get('nome-turma').lower()
-    url = request.form.get('link-turma').lower()
-    form = request.files['form-csv']
-    list_info = func.form_get_nomes(form)
-    turma = {'nome': nome, 'url': url, 'alunos': list_info}
-    func.set_turma(turma)
+    url = request.form.get('link-turma')
+    turma_id = request.form['turma-select']
+    nova_turma = ProfessorTurmas(professorID=current_user.professorId, turmaID=turma_id, link=url)
+    db.session.add(nova_turma)
+    db.session.commit()
     return redirect(url_for('turmas_salvas'))
 
 @app.route('/turma/ver/<string:turma>')
+@login_required
 def turma_ver(turma):
-    turma_info = func.get_turma(turma)
-    return render_template("turmas-forms/turma_ver.html", turma = turma_info, edit = False)
+    turmas_do_usuario = ProfessorTurmas.query.filter_by(professorID=current_user.professorId).all()
+    turma_ref = func.get_turma(turmas_do_usuario=turmas_do_usuario, turma=turma)
+    turma_info = Turma.query.filter_by(turmaID = turma_ref.turmaID).first()
+    turma_info.alunos = json.loads(turma_info.alunos)
+    return render_template("turmas-forms/turma_ver.html", turma_ref= turma_ref, turma = turma_info, edit = False)
 
 @app.route('/turma/editar/<string:turma>')
+@login_required
 def turma_edt(turma):
-    turma_info = func.get_turma(turma)
-    return render_template("turmas-forms/turma_ver.html", turma = turma_info, edit = True)
+    #turmas_do_usuario = ProfessorTurmas.query.filter_by(professorID=current_user.professorId).all()
+    #turma_ref = func.get_turma(turmas_do_usuario=turmas_do_usuario, turma=turma)
+    turma_do_professor = ProfessorTurmas.query.get(turma)
+    turma_info = Turma.query.filter_by(turmaID = turma_do_professor.turmaID).first()
+    turma_info.alunos = json.loads(turma_info.alunos)
+    return render_template("turmas-forms/turma_ver.html", turma_ref= turma_do_professor, turma = turma_info, edit = True)
 
 @app.route('/turma/del/<string:turma>')
+@login_required
 def turma_del(turma):
-    func.delete_turma(turma)
+    turma_do_professor = ProfessorTurmas.query.get(turma)
+    db.session.delete(turma_do_professor)
+    db.session.commit()
+    #func.delete_turma(turma)
     return redirect(url_for('turmas_salvas'))
 
 @app.route('/turma/salvar2', methods=['POST'])
+@login_required
 def turma_salvar2():
-    nome = request.form.get('nome-turma').lower()
-    email = request.form.getlist('email-aluno')
-    suap = request.form.getlist('name-suap')
-    v1 = func.get_turma(nome)
-    for aluno in v1['alunos']:
-        for i, e in enumerate(email):
-            if aluno['Endereco de e-mail'] == e:
-                if suap[i] != 'Não registrado':
-                    aluno['Nome-SUAP'] = suap[i]
-    turma = {'nome': nome, 'url': v1['url'], 'alunos': v1['alunos']}
-    func.edit_turma(nome, turma)
+    professor_turma_id = request.form.get('professorturma-id')
+    url_nova = request.form.get('link-turma')
+    
+    turma_do_professor = ProfessorTurmas.query.get(professor_turma_id)
+    turma_do_professor.link = url_nova
+    db.session.commit()
+    #turma = {'nome': nome, 'url': v1['url'], 'alunos': v1['alunos']}
+    #func.edit_turma(nome, turma)
     return redirect(url_for('turmas_salvas'))
 
 @app.route('/reordenar_turmas', methods=['POST'])
+@login_required
 def reordenar_turmas():
     nova_ordem = request.json.get('novaOrdem')
     func.reordenar_turmas_no_json(nova_ordem)

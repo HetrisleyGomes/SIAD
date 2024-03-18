@@ -186,20 +186,12 @@ def get_all_turmas():
         turmas = "Nenhuma turma salva"
     return turmas
 
-def get_turma(chave):
+def get_turma(turmas_do_usuario, turma):
     """Busca um registro especifico de Turmas.json"""
-
-    try:
-        with open(path, 'r') as turmas_file:
-            turmas = json.load(turmas_file)
-    except json.JSONDecodeError as e:
-        turmas = "Nenhuma turma salva"
-
-    if chave in turmas:
-        turma = turmas[chave]
-        return turma
-    else:
-        print(f"A turma '{chave}' não existe.")
+    for turmas in turmas_do_usuario:
+        if turmas.turmaID == int(turma):
+            return turmas
+    return None
     
 
 def set_turma(turma):

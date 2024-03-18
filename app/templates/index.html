@@ -13,15 +13,15 @@
             <form action="/registrar" method="post" class="form m-3">
                 <fieldset class="border p-3">
                     <legend>Escolha a turma</legend>
-                    <table class="table table-striped" style="width: 60%;">
+                    <table class="table table-striped table-turmas">
                         {% if turmas %}
                         {% for turma in turmas %}
-                            <tr>
-                                <td><label for="{{turma}}" class="form-check-label">{{ turma }}</label></td><td style="width: 10%"><input class="form-check-input" type="radio" value="{{turma}}" name="turma" id="{{turma}}" required></td>
+                            <tr class="m-3">
+                                <td><label for="{{ turma[1] }}" class="form-check-label label-turma">{{ turma[0][0].turmaInfo }}</label></td><td style="width: 10%"><input class="form-check-input" type="radio" value="{{ turma[0][0].turmaID }}" name="turma" id="{{ turma[1] }}" required></td>
                             </tr>
                         {% endfor %}
                         {% else %}
-                            <tr><td>Ops! Parece que vocÊ não possui nenhuma turma registrada, clique em <strong>Turmas</strong> e faça seu registro!</td></tr>
+                            <tr><td>Ops! Parece que você não possui nenhuma turma registrada, clique em <strong>Turmas</strong> e faça seu registro!</td></tr>
                         {% endif %}
                     </table>
                     {% if not data %}

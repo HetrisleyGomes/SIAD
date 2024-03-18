@@ -6,22 +6,21 @@
 <hr>
 <form action="/turma/salvar2" method="post">
     <div class="container row">
-        <h3 class="col-10">{{turma['nome']}}</h3>
+        <h3 class="col-10">{{turma.turmaInfo}}</h3>
         <div class="row col m-2" {{ '' if edit else 'hidden' }}>
-            <button type="submit" class="btn btn-sm btn-warning col">salvar alterações</button>
-            <a href="{{ url_for('turma_del', turma=turma['nome']) }}" class="btn btn-sm btn-danger col" >deletar</a>
+            <button type="submit" class="btn btn-sm btn-warning col m-1">salvar alterações</button>
+            <a href="{{ url_for('turma_del', turma=turma_ref.professorTurmasid ) }}" class="btn btn-sm btn-danger col m-1" >deletar</a>
         </div>
-        
+        <input type="hidden" name="professorturma-id" value="{{turma_ref.professorTurmasid }}">
+        <input type="hidden" name="turma-id" value="{{turma.turmaID}}">
     
         <div class="p-3 border">
-            <label for="urll" class="form-label">URL</label><input type="url" name="link-turma" class="form-control" {% if not edit %}disabled{% endif %} id="urll" value="{{ turma['url'] }}">
+            <label for="urll" class="form-label">URL</label><input type="url" name="link-turma" class="form-control" {% if not edit %}disabled{% endif %} id="urll" value="{{ turma_ref.link }}">
         </div>
 
         
     </div>
     <div class="m-4">
-            <input type="hidden" name="nome-turma" value="{{ turma['nome'] }}">
-            
         <table class="table">
             <thead>
                 <th>Nome Classroom</th>
@@ -29,11 +28,11 @@
                 <th>Nome SUAP</th>
             </thead>
             <tbody>
-                {% for aluno in turma['alunos'] %}
+                {% for aluno in turma.alunos %}
                     <tr>
                         <td>{{ aluno['Nome']}} {{aluno['Sobrenome']}}</td>
                         <td><input type="email" value="{{ aluno['Endereco de e-mail'] }}" class="form-control" readonly name="email-aluno"></td>
-                        <td><input type="text" value="{{ aluno['Nome-SUAP'] | default('Não registrado') }}" class="form-control" {{ '' if edit else 'disabled' }} name="name-suap"></td>
+                        <td><input type="text" value="{{ aluno['Nome-SUAP'] | default('Não registrado') }}" class="form-control" readonly name="name-suap"></td>
                     </tr>
                 {% endfor %}
             </tbody>
