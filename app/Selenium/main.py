@@ -5,6 +5,7 @@ import pandas as pd
 from time import sleep
 from selenium.webdriver.chrome.options import Options
 from decouple import config
+import json
 
 #print(webdriver.Chrome().service.service_args[1])
 
@@ -24,10 +25,10 @@ def aluno_data_name(a, alunos):
     return a
             
 
-def iniciar(url, alunos, etapa):
+def iniciar(url, alunos, etapa, turma_info):
     print(f"ETAPA: {int(etapa) -2} <=======================")
     chrome_options = Options()
-    chrome_options.add_argument('--headless')  # Executar em modo headless
+    #chrome_options.add_argument('--headless')  # Executar em modo headless
 
     navegador = webdriver.Chrome(options=chrome_options)
     navegador.get(url)
@@ -80,4 +81,10 @@ def iniciar(url, alunos, etapa):
             print("Alunos do Classroom não encontrados:")
             for aluno in acne:
                 print(aluno)
-
+            turma = [turma_info, acne]
+            print(turma)
+            try:
+                with open('./app/api/database/not_found_logs.json', 'w') as log:
+                    json.dump(turma, log)
+            except json.JSONDecodeError as e:
+                log = "Todos os alunos foram encontrados!"

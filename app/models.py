@@ -7,11 +7,10 @@ def get_user(user_id):
     return Professor.query.filter_by(professorId=user_id).first()
 
 class Professor(UserMixin, db.Model):
-    __tablename__ = 'tbProfessor'  # Substitua pelo nome real da sua tabela no banco de dados
+    __tablename__ = 'tbProfessor' 
 
     professorId = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nome = db.Column(db.String(255), nullable=False)
-    turmaRef = db.Column(db.Integer, nullable=True)
     email = db.Column(db.String(100), nullable=False)
     senha = db.Column(db.String(50), nullable=False)
     matricula = db.Column(db.String(100), nullable=False)

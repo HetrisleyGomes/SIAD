@@ -45,14 +45,22 @@
 }
 
 .table-turmas{
-    width: 95%;
+    width: 97%;
     background-color: #d4d4d4;
-    margin: 8px 18px;
+    margin: 8px auto;
     padding: 10px;
 }
 .label-turma{
     width: 100%;
     margin-left: 8px;
+}
+
+
+.div-box-info {
+    border: #0005 solid 1px;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: auto;
 }
 
 @keyframes s3{ 

@@ -20,6 +20,7 @@ nota_maxima = []
 @app.route('/home')
 def index():
     data = False
+    logs = None
     if os.path.exists(config("DATA")):
         data = True
     turmas = []
@@ -28,7 +29,10 @@ def index():
         for turma in turmas_do_usuario:
             turmas.append([Turma.query.join(ProfessorTurmas).filter(ProfessorTurmas.professorTurmasid == turma.professorTurmasid).all(), turma.professorTurmasid])
     #turmas = func.get_all_turmas()
-    return render_template("index.html",json = func.exist_json(), turmas = turmas, data = data)
+    if os.path.exists('./app/api/database/not_found_logs.json'):
+        with open('./app/api/database/not_found_logs.json', 'r') as log:
+            logs = json.load(log)
+    return render_template("index.html", turmas = turmas, data = data, logs = logs)
 
 @app.route('/notas')
 def notas():
@@ -141,7 +145,7 @@ def registrar():
     print(url)
     print(turma_info.alunos)
     try:
-        selenium.iniciar(url, turma_info.alunos, etapa)
+        selenium.iniciar(url, turma_info.alunos, etapa, turma_info.turmaInfo)
         flash('Notas Registradas no SUAP com sucesso!')
         return redirect(url_for('index'))
         import os
